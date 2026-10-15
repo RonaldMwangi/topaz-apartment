@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageIntro from '../components/PageIntro.astro';
+import { locationLabel, site } from '../config/site';
+---
+
+<BaseLayout title="Location" description={site.description}>
+  <PageIntro title="Location" description={locationLabel} />
+  <section class="panel" aria-labelledby="location-heading">
+    <h2 id="location-heading">Find us in {site.location.locality}</h2>
+    <p>{site.name} is near {site.location.nearby.join(' and ')}.</p>
+    {site.location.exactAddress ? <p>{site.location.exactAddress}</p> : <p>The exact address and arrival directions will be added once confirmed.</p>}
+  </section>
+</BaseLayout>

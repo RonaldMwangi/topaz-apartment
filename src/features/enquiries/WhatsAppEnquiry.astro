@@ -1,0 +1,31 @@
+---
+import { site } from '../../config/site';
+import { createWhatsAppEnquiryLink } from '../../utils/whatsapp';
+
+interface Props {
+  enquiryIdentifier?: string;
+}
+const { enquiryIdentifier } = Astro.props;
+const href = createWhatsAppEnquiryLink({
+  phoneNumber: site.whatsappNumber,
+  propertyName: site.name,
+  enquiryIdentifier,
+});
+---
+
+{href ? (
+  <a class="button" href={href}>Enquire on WhatsApp</a>
+) : (
+  <div class="unavailable">
+    <button class="button" type="button" disabled>WhatsApp enquiries unavailable</button>
+    <p>The property's public WhatsApp number has not yet been confirmed.</p>
+  </div>
+)}
+
+<style>
+  .unavailable p {
+    color: var(--color-muted);
+    font-size: var(--text-sm);
+    margin-block-start: var(--space-3);
+  }
+</style>

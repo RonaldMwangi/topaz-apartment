@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageIntro from '../components/PageIntro.astro';
+import WhatsAppEnquiry from '../features/enquiries/WhatsAppEnquiry.astro';
+---
+
+<BaseLayout title="Contact" description="Contact information for Topaz Apartment in Shanzu, Mombasa. Direct WhatsApp enquiries will be available once the public number is confirmed.">
+  <PageIntro title="Contact" description="Direct enquiries to Topaz Apartment." />
+  <section class="panel" aria-labelledby="enquiries-heading">
+    <h2 id="enquiries-heading">WhatsApp enquiries</h2>
+    <p>Once contact details are confirmed, you will be able to enquire directly with the property through WhatsApp.</p>
+    <WhatsAppEnquiry />
+  </section>
+</BaseLayout>
