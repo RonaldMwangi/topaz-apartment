@@ -1,0 +1,105 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Media from '../../components/Media.astro';
+import { photosForCategory, propertyPhotos } from '../../config/media';
+import Rate from './Rate.astro';
+import WhatsAppEnquiry from '../enquiries/WhatsAppEnquiry.astro';
+interface Props {
+  apartment: CollectionEntry<'accommodation'>;
+}
+const {
+  apartment: { data },
+} = Astro.props;
+const photo = data.photoIds.length
+  ? propertyPhotos.find((item) => item.id === data.photoIds[0])
+  : photosForCategory(data.id)[0];
+---
+
+<article class="apartment-card">
+  <a class="media-link" href={`/accommodation/${data.id}/`} aria-label={`Explore the ${data.title}`}>
+    <Media photo={photo} label={data.title} variant={data.id === 'one-bedroom' ? 'light' : 'soft'} />
+  </a>
+  <div class="card-heading">
+    <span class="apartment-number" aria-hidden="true">{data.number}</span>
+    <h3>
+      <a href={`/accommodation/${data.id}/`}>{data.title}</a>
+    </h3>
+  </div>
+  <p class="card-description">{data.description}</p>
+  <div class="card-bottom">
+    <Rate apartmentId={data.id} compact />
+    <a class="details-link" href={`/accommodation/${data.id}/`} aria-label={`View ${data.title} details`}>
+      Explore apartment
+      <span aria-hidden="true">↗</span>
+    </a>
+  </div>
+  <div class="card-enquiry">
+    <WhatsAppEnquiry
+      enquiryIdentifier={data.enquiryIdentifier}
+      apartmentId={data.id}
+      kind="stay"
+      label="Enquire about this apartment"
+      fallbackLabel="Prepare an apartment enquiry"
+      variant="primary"
+      ctaLocation="apartment_card"
+    />
+  </div>
+</article>
+<style>
+  .apartment-card {
+    min-width: 0;
+  }
+  .media-link {
+    display: block;
+    text-decoration: none;
+  }
+  .card-heading {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding-block: 1.75rem 1rem;
+  }
+  .apartment-number {
+    font-size: var(--text-xs);
+    color: var(--color-brand-red);
+  }
+  h3 {
+    font-size: var(--text-card-title);
+  }
+  h3 a {
+    text-decoration: none;
+  }
+  .card-description {
+    font-size: var(--text-base);
+    color: var(--color-muted);
+    max-width: 33rem;
+  }
+  .card-bottom {
+    flex-wrap: wrap;
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 1.25rem;
+    padding-block: 1.5rem;
+    border-block: 1px solid var(--color-border);
+  }
+  .details-link {
+    font-size: var(--text-sm);
+    display: flex;
+    gap: 1.25rem;
+    min-height: 2.75rem;
+    align-items: center;
+    text-decoration: none;
+  }
+  .details-link span {
+    font-size: 1.5rem;
+  }
+  .card-enquiry {
+    margin-top: 1rem;
+  }
+  @media (max-width: 40rem) {
+    .card-bottom {
+      flex-wrap: wrap;
+    }
+  }
+</style>

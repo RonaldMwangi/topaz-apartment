@@ -1,0 +1,94 @@
+---
+import Media from '../../components/Media.astro';
+import { galleryCategories, photosForCategory } from '../../config/media';
+interface Props {
+  category?: (typeof galleryCategories)[number]['id'];
+}
+const { category } = Astro.props;
+const categories = category
+  ? galleryCategories.filter((item) => item.id === category)
+  : galleryCategories;
+---
+
+<div class="gallery-groups">{categories.map((group) => {
+  const photos = photosForCategory(group.id);
+  return (
+    <section
+      class="gallery-group"
+      id={`gallery-${group.id}`}
+      aria-labelledby={`gallery-heading-${group.id}`}
+    >
+      <div class="group-heading">
+        <span class="eyebrow">{group.number} / In pictures</span>
+        <h2 id={`gallery-heading-${group.id}`}>{group.label}</h2>
+        {photos.length === 0 && (
+          <span class="gallery-status">Authentic photographs coming soon</span>
+        )}
+      </div>
+      <div class="gallery-grid">
+        {photos.length ? (
+          photos.map((photo) => <Media photo={photo} label={group.label} sizes="(max-width: 640px) 100vw, 50vw" />)
+        ) : (
+          <Media
+            label={group.label}
+            variant={
+              group.id === 'two-bedroom'
+                ? 'soft'
+                : group.id === 'pool'
+                  ? 'mist'
+                  : group.id === 'facilities'
+                    ? 'outline'
+                    : 'light'
+            }
+            aspect="wide"
+          />
+        )}
+      </div>
+    </section>
+  );
+})}</div>
+<style>
+  .gallery-groups {
+    display: grid;
+    gap: clamp(3rem, 6vw, 5rem);
+  }
+  .gallery-group {
+    scroll-margin-top: 2rem;
+  }
+  .group-heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.75rem 2rem;
+    padding-block: 1.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+  .group-heading .eyebrow {
+    margin-bottom: 0;
+  }
+  .group-heading h2 {
+    font-size: var(--text-h3);
+  }
+  .gallery-status {
+    margin-left: auto;
+    font-size: var(--text-xs);
+    color: var(--color-muted);
+  }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+  .gallery-grid > :global(:only-child) {
+    grid-column: 1 / -1;
+  }
+  @media (max-width: 40rem) {
+    .gallery-grid {
+      grid-template-columns: 1fr;
+    }
+    .gallery-status {
+      margin-left: 0;
+      flex-basis: 100%;
+    }
+  }
+</style>

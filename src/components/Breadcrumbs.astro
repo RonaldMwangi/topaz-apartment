@@ -1,0 +1,12 @@
+---
+import { navigation } from '../config/site';
+const current = navigation.find(item => item.href === Astro.url.pathname);
+---
+{current && current.href !== '/' && <nav class="container breadcrumbs" aria-label="Breadcrumb">
+  <a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">{current.label}</span>
+</nav>}
+<style>
+  .breadcrumbs { display: flex; flex-wrap: wrap; gap: var(--space-3); padding-top: var(--space-5); font-size: var(--text-sm); color: var(--color-muted); }
+  a { min-height: var(--touch-target); display: inline-flex; align-items: center; }
+  span { align-self: center; }
+</style>

@@ -1,0 +1,66 @@
+---
+import { site } from '../config/site';
+
+interface Props {
+  presentation?: 'navigation' | 'full';
+}
+const { presentation = 'navigation' } = Astro.props;
+// Replace only after receiving an approved horizontal/vector/transparent asset.
+// The supplied JPEG is opaque and must be displayed in full, including its margins.
+const logo = { src: '/brand/topaz-logo-original.jpeg', width: 568, height: 568 };
+---
+
+{presentation === 'full' ? (
+  <a class="brand-asset" href="/" aria-label={`${site.name} home`}>
+    <img src={logo.src} width={logo.width} height={logo.height} alt={`${site.name} — ${site.tagline}`} loading="lazy" decoding="async" />
+  </a>
+) : (
+  <a class="brand-navigation" href="/" aria-label={`${site.name} home`}>
+    <span class="brand-title">Topaz</span>
+    <span class="brand-descriptor">Apartments</span>
+  </a>
+)}
+
+<style>
+  .brand-navigation {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: start;
+    flex-shrink: 0;
+    font-family: var(--font-heading);
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--color-brand-navy);
+    min-inline-size: 10rem;
+    padding-block: var(--space-2);
+  }
+  .brand-title {
+    font-size: 1.75rem;
+    line-height: 1.1;
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-label);
+  }
+  .brand-descriptor {
+    margin-top: var(--space-1);
+    font-size: var(--text-xs);
+    line-height: 1.3;
+    font-weight: var(--weight-medium);
+    letter-spacing: var(--tracking-label);
+  }
+  .brand-asset {
+    /* At a 240px image width the logo's T is approximately 24px tall.
+         This 32px envelope exceeds that reference, in addition to original margins. */
+    --logo-width: 15rem;
+    --logo-clear-space: 2rem;
+    display: inline-flex;
+    max-inline-size: 100%;
+    padding: var(--logo-clear-space);
+    background: var(--color-logo-surface);
+    border-radius: var(--radius);
+  }
+  .brand-asset img {
+    inline-size: var(--logo-width);
+    max-inline-size: 100%;
+    block-size: auto;
+  }
+</style>

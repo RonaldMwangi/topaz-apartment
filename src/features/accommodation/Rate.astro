@@ -1,0 +1,86 @@
+---
+import { pricing, formatNightlyRate, type ApartmentId } from '../../config/pricing';
+interface Props {
+  apartmentId: ApartmentId;
+  compact?: boolean;
+}
+const { apartmentId, compact = false } = Astro.props;
+const rate = pricing[apartmentId];
+const formatted = formatNightlyRate(rate);
+---
+
+<div class:list={['rate', { compact }]} data-rate={apartmentId}>
+  <span class="rate-label">Accommodation rate</span>
+  {formatted ? (
+    <p class="rate-amount">
+      {formatted}
+      <span>/ night</span>
+    </p>
+  ) : (
+    <p class="rate-pending">
+      Enquire for
+      <br />
+      current rates
+    </p>
+  )}
+  {!formatted && <span class="rate-basis">Nightly rate · KES · to be confirmed</span>}
+  {rate.specialRateNote && <p class="rate-note">{rate.specialRateNote}</p>}
+  {rate.feeAndTaxNote && <p class="rate-note">{rate.feeAndTaxNote}</p>}
+  {formatted && !rate.feeAndTaxNote && <p class="rate-note">Confirm taxes, mandatory charges and applicable terms with the reservations team.</p>}
+  {rate.validityNote && <p class="rate-note">{rate.validityNote}</p>}
+  {rate.terms && rate.terms.length > 0 && (
+    <ul class="rate-terms">
+      {rate.terms.map((term) => (
+        <li>{term}</li>
+      ))}
+    </ul>
+  )}
+  {!compact && (
+    <p class="rate-note">
+      Ask the property to confirm the applicable rate, any taxes or mandatory fees, and the terms for
+      your dates.
+    </p>
+  )}
+</div>
+<style>
+  .rate-label {
+    display: block;
+    text-transform: uppercase;
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-label);
+    color: var(--color-muted);
+    margin-bottom: 0.75rem;
+  }
+  .rate-amount,
+  .rate-pending {
+    font-family: var(--font-heading);
+    font-size: var(--text-rate);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-heading);
+    line-height: 1.1;
+    margin: 0;
+  }
+  .rate-amount span {
+    display: block;
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    letter-spacing: 0;
+    margin-top: 0.5rem;
+  }
+  .rate-amount {
+    font-weight: var(--weight-bold);
+    font-variant-numeric: tabular-nums;
+  }
+  .rate-basis {
+    display: block;
+    font-size: var(--text-xs);
+    color: var(--color-muted);
+    margin-top: 0.75rem;
+  }
+  .rate-note,
+  .rate-terms {
+    color: var(--color-muted);
+    font-size: var(--text-sm);
+    margin: 1rem 0 0;
+  }
+</style>

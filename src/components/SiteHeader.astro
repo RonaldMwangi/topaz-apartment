@@ -1,50 +1,104 @@
 ---
+import BrandIdentity from './BrandIdentity.astro';
 import { navigation, site } from '../config/site';
-
+import WhatsAppEnquiry from '../features/enquiries/WhatsAppEnquiry.astro';
 const pathname = Astro.url.pathname.replace(/\/+$/, '') || '/';
 ---
 
-<header class="site-header">
-  <div class="container header-content">
-    <a class="wordmark" href="/">{site.name}</a>
-    <nav aria-label="Primary">
+<header class="site-header" data-site-header>
+  <div class="topline container">
+    <span>Shanzu, Mombasa · Kenya</span>
+    <span>{site.tagline}</span>
+  </div>
+  <div class="header-content container">
+    <BrandIdentity />
+    <button
+      class="menu-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="primary-navigation"
+      hidden
+    >
+      Menu
+      <span aria-hidden="true">+</span>
+    </button>
+    <nav id="primary-navigation" aria-label="Primary">
       <ul>
         {navigation.map(({ href, label }) => (
           <li>
-            <a href={href} aria-current={pathname === (href.replace(/\/+$/, '') || '/') ? 'page' : undefined}>
+            <a
+              href={href}
+              aria-current={pathname === (href.replace(/\/+$/, '') || '/') ? 'page' : undefined}
+              class:list={{ active: href !== '/' && pathname.startsWith(href.replace(/\/$/, '')) }}
+            >
               {label}
             </a>
           </li>
         ))}
       </ul>
     </nav>
+    <div class="header-enquiry">
+      <WhatsAppEnquiry
+        label="Enquire on WhatsApp"
+        fallbackLabel="Plan your stay"
+        showNote={false}
+        variant="primary"
+        ctaLocation="header"
+      />
+    </div>
   </div>
 </header>
-
+<script>
+  const header = document.querySelector<HTMLElement>('[data-site-header]');
+  const toggle = header?.querySelector<HTMLButtonElement>('.menu-toggle');
+  const nav = header?.querySelector<HTMLElement>('nav');
+  if (header && toggle && nav) {
+    header.dataset.enhanced = '';
+    toggle.hidden = false;
+    const close = () => {
+      toggle.setAttribute('aria-expanded', 'false');
+      nav.classList.remove('is-open');
+    };
+    toggle.addEventListener('click', () => {
+      const open = toggle.getAttribute('aria-expanded') !== 'true';
+      toggle.setAttribute('aria-expanded', String(open));
+      nav.classList.toggle('is-open', open);
+    });
+    header.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+        close();
+        toggle.focus();
+      }
+    });
+    nav.addEventListener('click', (event) => {
+      if ((event.target as HTMLElement).closest('a')) close();
+    });
+    window.matchMedia('(min-width: 80rem)').addEventListener('change', close);
+  }
+</script>
 <style>
   .site-header {
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-background);
+  }
+  .topline {
+    display: flex;
+    justify-content: space-between;
+    padding-block: var(--space-3);
+    font-size: var(--text-xs);
+    color: var(--color-muted);
     border-bottom: 1px solid var(--color-border);
   }
   .header-content {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: var(--space-4) var(--space-6);
-    padding-block: var(--space-5);
-  }
-  .wordmark {
-    font-size: var(--text-lg);
-    font-weight: 650;
-    text-decoration: none;
-  }
-  nav {
-    min-inline-size: 0;
+    gap: 1.5rem;
+    padding-block: 1.4rem;
   }
   ul {
     display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2) var(--space-4);
+    gap: clamp(1rem, 1.7vw, 2rem);
     list-style: none;
     margin: 0;
     padding: 0;
@@ -52,14 +106,71 @@ const pathname = Astro.url.pathname.replace(/\/+$/, '') || '/';
   nav a {
     display: inline-flex;
     align-items: center;
-    min-block-size: 2.75rem;
+    min-height: 2.75rem;
+    font-family: var(--font-heading);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
     text-decoration: none;
-    text-underline-offset: 0.4em;
+    position: relative;
   }
-  nav a:hover, nav a[aria-current='page'] {
-    text-decoration: underline;
+  nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.25rem;
+    height: 1px;
+    background: var(--color-brand-red);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--motion-duration) var(--motion-easing);
   }
-  nav a[aria-current='page'] {
-    font-weight: 650;
+  nav a:hover::after,
+  nav a[aria-current]::after,
+  nav a.active::after {
+    transform: scaleX(1);
+  }
+  .menu-toggle {
+    display: none;
+    background: none;
+    color: var(--color-text);
+    border: 1px solid var(--color-control-border);
+    border-radius: var(--radius);
+    padding: 0.7rem 1rem;
+    min-height: 2.75rem;
+    gap: 1.25rem;
+    align-items: center;
+    font-size: var(--text-sm);
+  }
+  @media (max-width: 79.999rem) {
+    .header-content {
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .header-enquiry {
+      display: none;
+    }
+    .menu-toggle:not([hidden]) {
+      display: inline-flex;
+    }
+    nav {
+      flex-basis: 100%;
+    }
+    ul {
+      flex-wrap: wrap;
+      gap: 0.5rem 1.75rem;
+    }
+    [data-enhanced] nav:not(.is-open) {
+      display: none;
+    }
+    [data-enhanced] nav.is-open {
+      padding-top: 1rem;
+      border-top: 1px solid var(--color-border);
+    }
+  }
+  @media (max-width: 40rem) {
+    .topline span:last-child {
+      display: none;
+    }
   }
 </style>

@@ -1,12 +1,15 @@
 ---
 import Seo from '../components/Seo.astro';
+import Analytics from '../components/Analytics.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { Font } from 'astro:assets';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import { site } from '../config/site';
 import '../styles/global.css';
 
 interface Props {
-  title: string;
+  title?: string;
   description?: string;
 }
 const { title, description } = Astro.props;
@@ -16,16 +19,19 @@ const { title, description } = Astro.props;
 <html lang={site.language}>
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <Font cssVariable="--font-montserrat" preload />
+    <Font cssVariable="--font-poppins" preload={[{ weight: 400 }]} />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <Seo title={title} description={description} />
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
     <SiteHeader />
-    <main id="main-content" class="container" tabindex="-1">
+    <main id="main-content" tabindex="-1">
+      <Breadcrumbs />
       <slot />
     </main>
     <SiteFooter />
+    <Analytics />
   </body>
 </html>

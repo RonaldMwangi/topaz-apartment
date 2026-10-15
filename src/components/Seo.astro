@@ -1,26 +1,41 @@
 ---
 import { site } from '../config/site';
+import { publicOrigin, indexingEnabled, searchConsoleVerification } from '../config/publication';
+import { pageSeo } from '../config/seo';
+import { structuredData, serializeJsonLd } from '../utils/structured-data';
+import { propertyPhotos, heroPhoto } from '../config/media';
 
 interface Props {
-  title: string;
+  title?: string;
   description?: string;
 }
 
-const { title, description = site.description } = Astro.props;
-const pageTitle = `${title} | ${site.name}`;
-const canonical = site.publicOrigin
-  ? new URL(Astro.url.pathname, site.publicOrigin).href
+const { title = site.name, description = site.description } = Astro.props;
+const metadata = pageSeo[Astro.url.pathname];
+const pageTitle = metadata?.title ?? `${title} | ${site.name}`;
+const pageDescription = metadata?.description ?? description;
+const indexable = import.meta.env.PROD && indexingEnabled;
+const canonical = publicOrigin
+  ? new URL(Astro.url.pathname, publicOrigin).href
   : undefined;
+const photo = heroPhoto;
+const socialImage = publicOrigin && photo ? new URL(photo.src.src, publicOrigin).href : null;
+const jsonLd = indexable ? structuredData(publicOrigin, Astro.url.pathname, propertyPhotos.map(({ src }) => src.src)) : null;
 ---
 
 <title>{pageTitle}</title>
-<meta name="description" content={description} />
+<meta name="description" content={pageDescription} />
+<meta name="robots" content={indexable ? 'index, follow, max-image-preview:large' : 'noindex, follow'} />
+{searchConsoleVerification && <meta name="google-site-verification" content={searchConsoleVerification} />}
 {canonical && <link rel="canonical" href={canonical} />}
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content={site.name} />
 <meta property="og:title" content={pageTitle} />
-<meta property="og:description" content={description} />
+<meta property="og:description" content={pageDescription} />
+<meta property="og:locale" content="en_KE" />
+{socialImage && <><meta property="og:image" content={socialImage} /><meta property="og:image:alt" content={photo!.alt} /><meta name="twitter:image" content={socialImage} /></>}
 {canonical && <meta property="og:url" content={canonical} />}
-<meta name="twitter:card" content="summary" />
+<meta name="twitter:card" content={socialImage ? 'summary_large_image' : 'summary'} />
 <meta name="twitter:title" content={pageTitle} />
-<meta name="twitter:description" content={description} />
+<meta name="twitter:description" content={pageDescription} />
+{jsonLd && <script type="application/ld+json" set:html={serializeJsonLd(jsonLd)} />}

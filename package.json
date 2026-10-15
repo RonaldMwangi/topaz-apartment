@@ -9,6 +9,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "check": "astro check && tsc --noEmit",
+    "test": "node --experimental-strip-types --experimental-test-isolation=none --test tests/*.test.mjs",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -22,6 +23,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@types/node": "^22.20.5",
     "typescript": "^6.0.3"
   }
 }

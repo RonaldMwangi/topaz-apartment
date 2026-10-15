@@ -1,12 +1,56 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageIntro from '../components/PageIntro.astro';
+import Gallery from '../features/gallery/Gallery.astro';
+import EnquirySection from '../features/enquiries/EnquirySection.astro';
+import { galleryCategories } from '../config/media';
 ---
 
-<BaseLayout title="Gallery" description="The Topaz Apartment property gallery. Photographs of the accommodation in Shanzu, Mombasa will be added once supplied.">
-  <PageIntro title="Gallery" description="A closer look at Topaz Apartment, coming soon." />
-  <section class="panel" aria-labelledby="gallery-status">
-    <h2 id="gallery-status">Property photographs to follow</h2>
-    <p>Photographs will be added when the property's approved images are available.</p>
-  </section>
+<BaseLayout>
+  <div class="container">
+    <PageIntro
+      title="A closer look at Topaz."
+      eyebrow="The gallery / Spaces & details"
+      description="Our spaces, through the lens. While authentic photographs are being prepared, these abstract coastal studies set the mood. They are artwork, not images of the property."
+    />
+    <nav class="gallery-navigation" aria-label="Gallery categories">
+      <ul>
+        {galleryCategories.map(({ id, label }) => (
+          <li>
+            <a href={`#gallery-${id}`}>
+              {label}
+              <span aria-hidden="true">↓</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+    <div class="section-bottom"><Gallery /></div>
+  </div>
+  <EnquirySection />
 </BaseLayout>
+<style>
+  .gallery-navigation {
+    margin-bottom: 3rem;
+  }
+  ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.5rem;
+    padding: 0;
+    margin: 0;
+  }
+  a {
+    display: flex;
+    align-items: center;
+    min-height: 2.75rem;
+    gap: 1rem;
+    font-size: var(--text-sm);
+    text-decoration: none;
+    border-bottom: 1px solid var(--color-border);
+  }
+  a:hover {
+    border-color: var(--color-action);
+  }
+</style>

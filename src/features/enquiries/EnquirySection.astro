@@ -1,0 +1,52 @@
+---
+import WhatsAppEnquiry from './WhatsAppEnquiry.astro';
+---
+
+<section class="enquiry-section">
+  <div class="container inner">
+    <div>
+      <span class="eyebrow">Let’s make a plan</span>
+      <h2>
+        Your next stay
+        <br />
+        starts with a hello.
+      </h2>
+    </div>
+    <div class="aside">
+      <p>Tell us when you’re thinking of coming. We’ll take the conversation from there.</p>
+      <WhatsAppEnquiry variant="primary" fallbackLabel="Prepare your stay enquiry" ctaLocation="final_enquiry" />
+      <p class="small note">
+        Rates, availability and arrangements are confirmed directly by the property.
+      </p>
+    </div>
+  </div>
+</section>
+<style>
+  .enquiry-section {
+    background: var(--color-surface-tint);
+    padding-block: clamp(3rem, 6vw, 5.5rem);
+  }
+  .inner {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 3rem;
+    align-items: center;
+  }
+  .aside {
+    max-width: 28rem;
+    justify-self: end;
+  }
+  .note {
+    color: var(--color-muted);
+    margin-top: 1.5rem;
+  }
+  @media (max-width: 40rem) {
+    .inner {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    .aside {
+      justify-self: start;
+    }
+  }
+</style>

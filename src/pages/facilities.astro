@@ -1,0 +1,117 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageIntro from '../components/PageIntro.astro';
+import FacilityList from '../features/facilities/FacilityList.astro';
+import Media from '../components/Media.astro';
+import EnquiryForm from '../features/enquiries/EnquiryForm.astro';
+import EnquirySection from '../features/enquiries/EnquirySection.astro';
+import { photosForCategory } from '../config/media';
+import { facilities } from '../config/facilities';
+import CoastalExperience from '../features/facilities/CoastalExperience.astro';
+const transfer = facilities.find((facility) => facility.id === 'transfers')!;
+---
+
+<BaseLayout>
+  <div class="container">
+    <PageIntro
+      title="Facilities for your Shanzu stay."
+      eyebrow="At Topaz / Facilities & arrangements"
+      description="A swimming pool, ample parking and thoughtful arrangements to discuss before you arrive."
+    />
+    <Media
+      label="Swimming pool & shared facilities"
+      photo={photosForCategory('pool')[0]}
+      variant="mist"
+      aspect="wide"
+    />
+    <section class="section" aria-label="Property facilities">
+      <h2 class="sr-only">Property facilities and advance arrangements</h2>
+      <FacilityList detailed />
+      <p class="facilities-note">
+        Please confirm any access conditions and service charges directly. Facilities and
+        arrangements are not represented as complimentary or included in accommodation rates.
+      </p>
+    </section>
+  </div>
+  <section class="transfer-section section" aria-labelledby="transfer-heading">
+    <div class="container grid-12">
+      <div class="transfer-copy">
+        <span class="eyebrow">Arrive with a plan</span>
+        <h2 id="transfer-heading">
+          The journey
+          <br />
+          matters, too.
+        </h2>
+        <p class="lead">{transfer.description}</p>
+        <p>{transfer.note}</p>
+        <span class="transfer-line" aria-hidden="true">
+          FROM HERE
+          <span>⟶</span>
+          TO THERE
+        </span>
+      </div>
+      <div class="transfer-form"><EnquiryForm mode="transfer" id="transfer-enquiry" /></div>
+    </div>
+  </section>
+  <CoastalExperience />
+  <EnquirySection />
+</BaseLayout>
+<style>
+  .facilities-note {
+    border-top: 1px solid var(--color-border);
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    color: var(--color-muted);
+    font-size: var(--text-sm);
+    max-width: 48rem;
+  }
+  .transfer-section {
+    background: var(--color-surface-alt);
+  }
+  .transfer-copy {
+    grid-column: span 5;
+    padding-top: 1rem;
+  }
+  h2 {
+    margin-bottom: 2rem;
+  }
+  .transfer-copy > p:not(.lead) {
+    color: var(--color-muted);
+    font-size: var(--text-base);
+    max-width: 25rem;
+  }
+  .transfer-form {
+    grid-column: 7 / -1;
+    min-width: 0;
+  }
+  .transfer-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: center;
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-label);
+    margin-top: 3rem;
+    color: var(--color-muted);
+  }
+  .transfer-line span {
+    letter-spacing: 0;
+  }
+  @media (max-width: 64rem) {
+    .transfer-form {
+      grid-column: 6 / -1;
+    }
+  }
+  @media (max-width: 48rem) {
+    .transfer-copy,
+    .transfer-form {
+      grid-column: 1 / -1;
+    }
+    .transfer-form {
+      margin-top: 1.5rem;
+    }
+    .transfer-line {
+      margin-top: 1.5rem;
+    }
+  }
+</style>

@@ -1,0 +1,62 @@
+---
+import { measurementId, indexingEnabled } from '../config/publication';
+const enabled = import.meta.env.PROD && indexingEnabled && !!measurementId;
+---
+{enabled && <span hidden data-analytics-id={measurementId}></span>}
+<script>
+  import type { EnquiryEventContext } from '../utils/analytics';
+  type GtagWindow = Window & { dataLayer?: unknown[]; gtag?: (...args: unknown[]) => void };
+  const browser = window as GtagWindow;
+  const id = document.querySelector<HTMLElement>('[data-analytics-id]')?.dataset.analyticsId;
+  let active = false;
+  let configured = false;
+  const pagePath = window.location.pathname; // Never collect query strings or fragments.
+  const category = /^\/accommodation\/(one-bedroom|two-bedroom)\/$/.exec(pagePath)?.[1];
+  const event = (name: string, context: Record<string, string>) => {
+    if (active) browser.gtag?.('event', name, { page_path: pagePath, ...context });
+  };
+  // Consent UI is supplied by the production privacy implementation. No cookies or
+  // third-party requests are made by this integration before an explicit grant.
+  document.addEventListener('topaz:analytics-consent', (input) => {
+    const granted = (input as CustomEvent<unknown>).detail === 'granted';
+    if (!id) return;
+    active = granted;
+    if (!granted) {
+      browser.gtag?.('consent', 'update', { analytics_storage: 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
+      return;
+    }
+    if (configured) {
+      browser.gtag?.('consent', 'update', { analytics_storage: 'granted' });
+      return;
+    }
+    configured = true;
+    browser.dataLayer = browser.dataLayer || [];
+    browser.gtag = function () { browser.dataLayer!.push(arguments); };
+    browser.gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
+    browser.gtag('consent', 'update', { analytics_storage: 'granted' });
+    browser.gtag('js', new Date());
+    browser.gtag('config', id, {
+      send_page_view: false, allow_google_signals: false, allow_ad_personalization_signals: false,
+      page_location: window.location.origin + pagePath, page_referrer: '',
+    });
+    const loader = document.createElement('script');
+    loader.async = true;
+    loader.src = `https://www.googletagmanager.com/gtag/js?id=${id}`;
+    document.head.append(loader);
+    event('page_view', { page_location: window.location.origin + pagePath, page_title: document.title, page_referrer: '' });
+    if (category) event('apartment_view', { accommodation_type: category });
+  });
+  document.addEventListener('topaz:enquiry', (input) => {
+    const context = (input as CustomEvent<EnquiryEventContext>).detail;
+    if (!context || !['general', 'stay', 'meals', 'transfer', 'yacht'].includes(context.enquiry_type)) return;
+    // Allowlist even internally dispatched fields. Do not send arbitrary event detail.
+    const safe: Record<string, string> = {
+      enquiry_type: context.enquiry_type,
+      cta_location: /^[a-z_-]{1,40}$/.test(context.cta_location) ? context.cta_location : 'shared',
+    };
+    if (context.accommodation_type === 'one-bedroom' || context.accommodation_type === 'two-bedroom') safe.accommodation_type = context.accommodation_type;
+    event('whatsapp_click', safe);
+    if (context.enquiry_type === 'transfer') event('transfer_enquiry_click', safe);
+    if (context.enquiry_type === 'yacht') event('yacht_enquiry_click', safe);
+  });
+</script>

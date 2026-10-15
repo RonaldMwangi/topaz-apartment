@@ -1,31 +1,22 @@
 ---
-import { getCollection, type CollectionEntry } from 'astro:content';
-import WhatsAppEnquiry from '../enquiries/WhatsAppEnquiry.astro';
-
-const accommodation: CollectionEntry<'accommodation'>[] = (
-  await getCollection('accommodation', ({ data }) => !data.draft)
-).sort((a, b) => a.id.localeCompare(b.id));
+import { getCollection } from 'astro:content';
+import AccommodationCard from './AccommodationCard.astro';
+const apartments = (await getCollection('accommodation', ({ data }) => !data.draft)).sort((a, b) =>
+  a.data.number.localeCompare(b.data.number),
+);
 ---
 
-{accommodation.length === 0 ? (
-  <section class="panel" aria-labelledby="accommodation-status">
-    <h2 id="accommodation-status">Accommodation details to follow</h2>
-    <p>Accommodation options, guest capacities, amenities and prices will be shared once confirmed.</p>
-  </section>
-) : (
-  <div class="stack">
-    {accommodation.map(({ id, data }) => (
-      <article class="panel stack" aria-labelledby={`accommodation-${id}`}>
-        <h2 id={`accommodation-${id}`}>{data.title}</h2>
-        <p>{data.description}</p>
-        {data.images.map((image) => (
-          <img src={image.src} alt={image.alt} width={image.width} height={image.height} loading="lazy" decoding="async" />
-        ))}
-        <p>Up to {data.guestCapacity} {data.guestCapacity === 1 ? 'guest' : 'guests'}.</p>
-        {data.amenities.length > 0 && <ul aria-label="Amenities">{data.amenities.map((amenity) => <li>{amenity}</li>)}</ul>}
-        {data.price && <p>{new Intl.NumberFormat('en-KE', { style: 'currency', currency: data.price.currency }).format(data.price.amount)} per {data.price.basis}.</p>}
-        <WhatsAppEnquiry enquiryIdentifier={data.enquiryIdentifier} />
-      </article>
-    ))}
-  </div>
-)}
+<div class="accommodation-list">{apartments.map((apartment) => <AccommodationCard apartment={apartment} />)}</div>
+<style>
+  .accommodation-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(2rem, 4vw, 4rem);
+  }
+  @media (max-width: 48rem) {
+    .accommodation-list {
+      grid-template-columns: 1fr;
+      gap: 3.5rem;
+    }
+  }
+</style>

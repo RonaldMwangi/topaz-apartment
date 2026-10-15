@@ -1,1 +1,22 @@
-[]
+[
+  {
+    "id": "one-bedroom",
+    "title": "One-Bedroom Apartment",
+    "shortName": "One bedroom",
+    "number": "01",
+    "introduction": "One bedroom. Your Shanzu stay.",
+    "description": "Make Shanzu your coastal base with a one-bedroom apartment at Topaz Apartments. Explore the nightly rate below and contact our team to discuss your dates and guest arrangements.",
+    "enquiryIdentifier": "One-Bedroom Apartment",
+    "draft": false
+  },
+  {
+    "id": "two-bedroom",
+    "title": "Two-Bedroom Apartment",
+    "shortName": "Two bedrooms",
+    "number": "02",
+    "introduction": "Two bedrooms. More ways to stay.",
+    "description": "Choose a two-bedroom apartment for your stay in Shanzu, Mombasa. View the nightly rate and speak with our team about your party, preferred dates and sleeping arrangements.",
+    "enquiryIdentifier": "Two-Bedroom Apartment",
+    "draft": false
+  }
+]

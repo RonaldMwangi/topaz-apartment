@@ -1,0 +1,60 @@
+---
+import { faqs } from '../config/faqs';
+interface Props { limit?: number; }
+const { limit = faqs.length } = Astro.props;
+---
+
+<div class="faq-list">{faqs.slice(0, limit).map(({ question, answer }, index) => (
+  <details>
+    <summary>
+      <span class="index" aria-hidden="true">
+        {String(index + 1).padStart(2, '0')}
+      </span>
+      <span>{question}</span>
+      <span class="toggle" aria-hidden="true">
+        +
+      </span>
+    </summary>
+    <p>{answer}</p>
+  </details>
+))}</div>
+<style>
+  .faq-list { background: var(--color-white); }
+  details {
+    border-bottom: 1px solid var(--color-border);
+  }
+  details:first-child {
+    border-top: 1px solid var(--color-border);
+  }
+  summary {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+    list-style: none;
+    padding-block: var(--space-6);
+    cursor: pointer;
+    font-size: var(--text-base);
+    font-weight: var(--weight-medium);
+    line-height: 1.5;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  .index {
+    font-size: var(--text-xs);
+    color: var(--color-muted);
+  }
+  .toggle {
+    margin-left: auto;
+    font-size: 1.5rem;
+    font-weight: 300;
+  }
+  details[open] .toggle {
+    transform: rotate(45deg);
+  }
+  p {
+    color: var(--color-muted);
+    padding: 0 2.5rem var(--space-5);
+    max-width: 48rem;
+  }
+</style>

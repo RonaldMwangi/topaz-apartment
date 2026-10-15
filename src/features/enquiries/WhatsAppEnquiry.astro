@@ -1,31 +1,75 @@
 ---
 import { site } from '../../config/site';
-import { createWhatsAppEnquiryLink } from '../../utils/whatsapp';
-
+import { rateLabel } from '../../config/pricing';
+import { createWhatsAppEnquiryLink, type EnquiryKind } from '../../utils/whatsapp';
 interface Props {
   enquiryIdentifier?: string;
+  apartmentId?: string;
+  kind?: EnquiryKind;
+  message?: string;
+  label?: string;
+  fallbackLabel?: string;
+  variant?: 'primary' | 'outline' | 'light' | 'text';
+  showNote?: boolean;
+  ctaLocation?: string;
 }
-const { enquiryIdentifier } = Astro.props;
+const {
+  enquiryIdentifier,
+  apartmentId,
+  kind = 'general',
+  message,
+  label = 'Enquire on WhatsApp',
+  fallbackLabel = 'Prepare an enquiry',
+  variant = 'primary',
+  showNote = true,
+  ctaLocation = 'shared',
+} = Astro.props;
 const href = createWhatsAppEnquiryLink({
   phoneNumber: site.whatsappNumber,
   propertyName: site.name,
   enquiryIdentifier,
+  message,
+  details: { kind, nightlyRate: apartmentId === 'one-bedroom' || apartmentId === 'two-bedroom' ? rateLabel(apartmentId) ?? undefined : undefined },
 });
+const params = new URLSearchParams();
+if (apartmentId) params.set('apartment', apartmentId);
+if (kind === 'meals' || kind === 'transfer') params.set('interest', kind);
+const fallback = `/contact/${params.size ? `?${params}` : ''}#enquiry`;
 ---
 
-{href ? (
-  <a class="button" href={href}>Enquire on WhatsApp</a>
-) : (
-  <div class="unavailable">
-    <button class="button" type="button" disabled>WhatsApp enquiries unavailable</button>
-    <p>The property's public WhatsApp number has not yet been confirmed.</p>
-  </div>
-)}
-
+<div class="enquiry-action">
+  <a class:list={[
+    variant === 'text' ? 'text-link' : 'button',
+    { 'button-primary': variant === 'primary', 'button-outline': variant === 'outline', 'button-light': variant === 'light' },
+  ]} href={href ?? fallback} data-whatsapp={href ? kind : undefined} data-apartment={apartmentId} data-cta-location={ctaLocation}>
+    {href ? label : fallbackLabel}
+    <span aria-hidden="true">↗</span>
+  </a>
+  {!href && showNote && (
+    <small class="connection-note">WhatsApp number pending · enquiry preview available</small>
+  )}
+</div>
+<script>
+  import { trackEnquiry } from '../../utils/analytics';
+  import type { EnquiryKind } from '../../utils/whatsapp';
+  document.querySelectorAll<HTMLAnchorElement>('[data-whatsapp]').forEach((link) => {
+    link.addEventListener('click', () => trackEnquiry({
+      enquiry_type: link.dataset.whatsapp as EnquiryKind,
+      accommodation_type: link.dataset.apartment === 'one-bedroom' || link.dataset.apartment === 'two-bedroom' ? link.dataset.apartment : undefined,
+      cta_location: link.dataset.ctaLocation ?? 'shared',
+    }));
+  });
+</script>
 <style>
-  .unavailable p {
-    color: var(--color-muted);
-    font-size: var(--text-sm);
-    margin-block-start: var(--space-3);
+  .enquiry-action {
+    min-inline-size: 0;
+  }
+  .connection-note {
+    display: block;
+    margin-top: 0.6rem;
+    max-width: 23rem;
+    font-size: var(--text-xs);
+    line-height: 1.5;
+    color: inherit;
   }
 </style>

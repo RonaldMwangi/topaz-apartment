@@ -1,0 +1,20 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import AccommodationDetail from '../../features/accommodation/AccommodationDetail.astro';
+export async function getStaticPaths() {
+  const apartments = await getCollection('accommodation', ({ data }) => !data.draft);
+  return apartments.map((apartment) => ({
+    params: { id: apartment.data.id },
+    props: { apartment },
+  }));
+}
+interface Props {
+  apartment: CollectionEntry<'accommodation'>;
+}
+const { apartment } = Astro.props;
+---
+
+<BaseLayout>
+  <AccommodationDetail apartment={apartment} />
+</BaseLayout>

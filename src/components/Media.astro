@@ -1,0 +1,178 @@
+﻿---
+import { Picture } from 'astro:assets';
+import type { PropertyPhoto } from '../config/media';
+interface Props {
+  photo?: PropertyPhoto;
+  label: string;
+  variant?: 'light' | 'soft' | 'outline' | 'mist';
+  aspect?: 'landscape' | 'portrait' | 'wide' | 'square';
+  priority?: boolean;
+  sizes?: string;
+}
+const { photo, label, variant = 'light', aspect = photo?.aspect ?? 'landscape', priority = false,
+  sizes = '(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 60vw' } = Astro.props;
+const widths = photo ? [480, 768, 1200, 1600].filter(width => width <= photo.src.width) : [];
+if (photo && !widths.length) widths.push(photo.src.width);
+---
+<figure class:list={['media', variant, aspect, { 'has-photo': !!photo }]}>
+  <div class="media-visual">
+    {photo ? (
+      <Picture src={photo.src} alt={photo.alt} widths={widths} sizes={sizes}
+        formats={['avif', 'webp']} fallbackFormat="jpg"
+        style={photo.objectPosition ? `object-position: ${photo.objectPosition}` : undefined}
+        loading={priority ? 'eager' : 'lazy'} fetchpriority={priority ? 'high' : 'auto'} />
+    ) : (
+      <div class="artwork" aria-hidden="true">
+        <span class="plate-index">Coastal studies / Topaz Apartments</span>
+        <svg viewBox="0 0 600 700" fill="none" preserveAspectRatio="xMidYMid slice">
+          <circle class="sun" cx="452" cy="154" r="59" />
+          <path class="arch-fill" d="M115 700V332a185 185 0 0 1 370 0v368Z" />
+          <g class="contours">
+            <path d="M83 700V330a217 217 0 0 1 434 0v370" />
+            <path d="M115 700V332a185 185 0 0 1 370 0v368" />
+            <path d="M148 700V335a152 152 0 0 1 304 0v365" />
+            <path d="M181 700V337a119 119 0 0 1 238 0v363" />
+            <path d="M214 700V340a86 86 0 0 1 172 0v360" />
+            <path d="M247 700V341a53 53 0 0 1 106 0v359" />
+          </g>
+          <path class="shore" d="M-100 580C100 410 165 610 375 488S600 442 750 355V800H-100Z" />
+          <path class="shore-line" d="M-100 552C100 382 165 582 375 460S600 414 750 327" />
+        </svg>
+      </div>
+    )}
+  </div>
+  {photo ? (photo.caption || photo.attribution) && <figcaption class="photo-caption">{photo.caption}
+    {photo.attribution && <span class="art-note">Photo: {photo.attribution.url ? <a href={photo.attribution.url} rel="external noopener noreferrer">{photo.attribution.name}</a> : photo.attribution.name}</span>}
+  </figcaption> : (
+    <figcaption class="placeholder-caption">
+      <div class="caption-heading"><span>{label}</span><span>Photography to follow</span></div>
+      <span class="art-note">Abstract artwork · not a property photograph</span>
+    </figcaption>
+  )}
+</figure>
+<style>
+  .media {
+    --media-base: var(--color-art-base);
+    --media-shape: var(--color-art-mid);
+    min-inline-size: 0;
+    border: 1px solid var(--color-border);
+  }
+  .media-visual {
+    position: relative;
+    overflow: hidden;
+    background: var(--media-base);
+    isolation: isolate;
+  }
+  .landscape .media-visual {
+    aspect-ratio: 4 / 3;
+  }
+  .portrait .media-visual {
+    aspect-ratio: 5 / 6;
+  }
+  .wide .media-visual {
+    aspect-ratio: 16 / 8;
+  }
+  .square .media-visual {
+    aspect-ratio: 1;
+  }
+  .artwork {
+    position: absolute;
+    inset: 0;
+    color: var(--color-brand-navy);
+  }
+  .plate-index {
+    position: absolute;
+    left: 6%;
+    top: 6%;
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-label);
+    z-index: 1;
+  }
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+  .sun {
+    fill: var(--color-white);
+  }
+  .arch-fill {
+    fill: var(--media-shape);
+  }
+  .contours {
+    stroke: currentColor;
+    stroke-width: 0.8;
+    opacity: 0.35;
+  }
+  .shore {
+    fill: var(--color-art-strong);
+  }
+  .shore-line {
+    stroke: currentColor;
+    stroke-width: 0.8;
+    opacity: 0.45;
+  }
+  .placeholder-caption,
+  .photo-caption {
+    padding: var(--space-4) var(--space-5);
+    background: var(--color-white);
+    font-size: var(--text-sm);
+  }
+  .caption-heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-4);
+  }
+  .caption-heading > span:first-child {
+    font-weight: var(--weight-medium);
+    color: var(--color-brand-navy);
+  }
+  .caption-heading > span:last-child,
+  .art-note {
+    font-size: var(--text-xs);
+    color: var(--color-muted);
+  }
+  .art-note {
+    display: block;
+    margin-top: var(--space-2);
+  }
+  .soft {
+    --media-base: var(--color-surface-alt);
+    --media-shape: var(--color-art-strong);
+  }
+  .outline {
+    --media-base: var(--color-white);
+    --media-shape: var(--color-art-base);
+  }
+  .mist {
+    --media-base: var(--color-surface-tint);
+    --media-shape: var(--color-art-mid);
+  }
+  .mist .contours {
+    transform-origin: center;
+    transform: rotate(90deg);
+  }
+  .has-photo :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .has-photo :global(picture) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  @media (max-width: 40rem) {
+    .wide .media-visual {
+      aspect-ratio: 4 / 3;
+    }
+    .placeholder-caption,
+    .photo-caption {
+      padding: var(--space-4);
+    }
+    .plate-index {
+      max-width: 80%;
+    }
+  }
+</style>
