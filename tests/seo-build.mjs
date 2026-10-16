@@ -74,7 +74,7 @@ const location = readFileSync(join(root, 'location/index.html'), 'utf8');
 assert.ok(location.includes('href="https://maps.app.goo.gl/PRfUywz8UmemTPmL6"'));
 assert.match(strip(location), /15 minutes/);
 const contact = readFileSync(join(root, 'contact/index.html'), 'utf8');
-assert.equal((contact.match(/<details(?:\s|>)/g) ?? []).length, 10);
+assert.equal((contact.match(/<details(?:\s|>)/g) ?? []).length, 9);
 assert.ok(!existsSync(join(root, 'sitemap.xml')) === !origin);
 const robots = readFileSync(join(root, 'robots.txt'), 'utf8');
 assert.match(robots, /Allow: \//);

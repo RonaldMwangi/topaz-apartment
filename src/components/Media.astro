@@ -8,22 +8,24 @@ interface Props {
   aspect?: 'landscape' | 'portrait' | 'wide' | 'square';
   priority?: boolean;
   sizes?: string;
+  showCredit?: boolean;
 }
-const { photo, label, variant = 'light', aspect = photo?.aspect ?? 'landscape', priority = false,
-  sizes = '(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 60vw' } = Astro.props;
-const widths = photo ? [480, 768, 1200, 1600].filter(width => width <= photo.src.width) : [];
+const { photo, label, variant = 'light', aspect = photo?.aspect ?? 'landscape', priority = false, showCredit = false,
+  sizes = '(max-width: 768px) calc(100vw - 2.5rem), (max-width: 1422px) 44vw, 620px' } = Astro.props;
+const widths = photo ? [360, 480, 768, 960, 1200, 1600].filter(width => width <= photo.src.width) : [];
+if (photo && photo.src.width < 1600 && !widths.includes(photo.src.width)) widths.push(photo.src.width);
 if (photo && !widths.length) widths.push(photo.src.width);
 ---
-<figure class:list={['media', variant, aspect, { 'has-photo': !!photo }]}>
+<figure class:list={['media', variant, aspect, { 'has-photo': !!photo }]}
+  data-photo-id={photo?.id} data-photo-kind={photo ? photo.illustrative ? 'illustrative' : 'actual-property' : undefined}>
   <div class="media-visual">
     {photo ? (
       <Picture src={photo.src} alt={photo.alt} widths={widths} sizes={sizes}
-        formats={['avif', 'webp']} fallbackFormat="jpg"
+        formats={['avif', 'webp']} fallbackFormat="jpg" quality={85}
         style={photo.objectPosition ? `object-position: ${photo.objectPosition}` : undefined}
         loading={priority ? 'eager' : 'lazy'} fetchpriority={priority ? 'high' : 'auto'} />
     ) : (
       <div class="artwork" aria-hidden="true">
-        <span class="plate-index">Coastal studies / Topaz Apartments</span>
         <svg viewBox="0 0 600 700" fill="none" preserveAspectRatio="xMidYMid slice">
           <circle class="sun" cx="452" cy="154" r="59" />
           <path class="arch-fill" d="M115 700V332a185 185 0 0 1 370 0v368Z" />
@@ -42,11 +44,10 @@ if (photo && !widths.length) widths.push(photo.src.width);
     )}
   </div>
   {photo ? (photo.caption || photo.attribution) && <figcaption class="photo-caption">{photo.caption}
-    {photo.attribution && <span class="art-note">Photo: {photo.attribution.url ? <a href={photo.attribution.url} rel="external noopener noreferrer">{photo.attribution.name}</a> : photo.attribution.name}</span>}
+    {showCredit && photo.attribution && <span class="art-note">Photo: {photo.attribution.url ? <a href={photo.attribution.url} rel="external noopener noreferrer">{photo.attribution.name}</a> : photo.attribution.name}</span>}
   </figcaption> : (
     <figcaption class="placeholder-caption">
-      <div class="caption-heading"><span>{label}</span><span>Photography to follow</span></div>
-      <span class="art-note">Abstract artwork · not a property photograph</span>
+      <div class="caption-heading"><span>{label}</span><span>Images coming soon</span></div>
     </figcaption>
   )}
 </figure>
@@ -79,14 +80,6 @@ if (photo && !widths.length) widths.push(photo.src.width);
     position: absolute;
     inset: 0;
     color: var(--color-brand-navy);
-  }
-  .plate-index {
-    position: absolute;
-    left: 6%;
-    top: 6%;
-    font-size: var(--text-xs);
-    letter-spacing: var(--tracking-label);
-    z-index: 1;
   }
   svg {
     width: 100%;
@@ -159,6 +152,8 @@ if (photo && !widths.length) widths.push(photo.src.width);
     object-fit: cover;
   }
   .has-photo :global(picture) {
+    position: absolute;
+    inset: 0;
     display: block;
     width: 100%;
     height: 100%;
@@ -170,9 +165,6 @@ if (photo && !widths.length) widths.push(photo.src.width);
     .placeholder-caption,
     .photo-caption {
       padding: var(--space-4);
-    }
-    .plate-index {
-      max-width: 80%;
     }
   }
 </style>

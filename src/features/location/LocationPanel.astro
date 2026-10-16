@@ -1,4 +1,6 @@
 ---
+import Media from '../../components/Media.astro';
+import { photoForPlacement } from '../../config/media';
 import { locationLabel, site } from '../../config/site';
 interface Props {
   full?: boolean;
@@ -7,35 +9,17 @@ const { full = false } = Astro.props;
 ---
 
 <div class="location-panel grid-12">
-  <div
-    class="location-art"
-    aria-label="Shanzu, Mombasa, Kenya. Decorative coastal illustration, not a map."
-  >
-    <span class="location-overline">A connection to the coast</span>
-    <div class="coast-lines" aria-hidden="true">
-      <i></i>
-      <i></i>
-      <i></i>
-      <i></i>
-      <i></i>
-    </div>
-    <div class="location-type">
-      <span>Kenya</span>
-      <span>Mombasa</span>
-      <strong>Shanzu.</strong>
-    </div>
-    <span class="art-caption">Coastal illustration · not a map</span>
-  </div>
+  <div class="location-media"><Media photo={photoForPlacement('home-location')} label="Coastal surroundings" aspect="landscape" /></div>
   <div class="location-copy">
     <span class="eyebrow">The neighbourhood</span>
     <h2>
-      Shanzu.
+      Shanzu
       <br />
-      At your own pace.
+      At your own pace
     </h2>
     <p class="lead">{locationLabel}</p>
     <p>
-      {`${site.name} is near ${site.location.nearby.join(' and ')}.`}
+      {site.location.landmarks}
     </p>
     <p>{site.location.beachWalk}</p>
     <div class="actions"><a class="button" href={site.location.mapsUrl} rel="external">Get Directions<span aria-hidden="true">↗</span></a></div>
@@ -60,74 +44,9 @@ const { full = false } = Astro.props;
   .location-panel {
     align-items: center;
   }
-  .location-art {
-    grid-column: span 6;
-    position: relative;
-    min-height: 27rem;
-    overflow: hidden;
-    background: var(--color-surface-alt);
-    padding: clamp(1.5rem, 3vw, 3rem);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  .location-overline {
-    position: relative;
-    z-index: 1;
-    font-size: var(--text-xs);
-    letter-spacing: var(--tracking-label);
-    text-transform: uppercase;
-  }
-  .location-type {
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    z-index: 1;
-    padding-block: 3rem;
-  }
-  .location-type span {
-    font-size: var(--text-sm);
-    line-height: 2;
-  }
-  .location-type strong {
-    font-family: var(--font-heading);
-    font-size: var(--text-display);
-    font-weight: var(--weight-bold);
-    line-height: 1.1;
-    letter-spacing: var(--tracking-heading);
-  }
-  .coast-lines {
-    position: absolute;
-    inset: -10% -40% -10% 37%;
-    transform: rotate(18deg);
-  }
-  i {
-    position: absolute;
-    border: 1px solid var(--color-brand-navy);
-    width: 100%;
-    height: 130%;
-    border-radius: 50%;
-    opacity: 0.55;
-  }
-  i:nth-child(2) {
-    left: 8%;
-  }
-  i:nth-child(3) {
-    left: 16%;
-  }
-  i:nth-child(4) {
-    left: 24%;
-  }
-  i:nth-child(5) {
-    left: 32%;
-  }
-  .art-caption {
-    font-size: var(--text-xs);
-    position: relative;
-    z-index: 1;
-  }
+  .location-media { grid-column: span 6; }
   .location-copy {
-    grid-column: 8 / -1;
+    grid-column: 7 / -1;
   }
   h2 {
     margin-bottom: 1.5rem;
@@ -143,14 +62,11 @@ const { full = false } = Astro.props;
     }
   }
   @media (max-width: 48rem) {
-    .location-art,
+    .location-media,
     .location-copy {
       grid-column: 1 / -1;
     }
-    .location-art {
-      min-height: 23rem;
-    }
-    .location-copy {
+.location-copy {
       margin-top: 1.5rem;
     }
   }

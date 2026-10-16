@@ -1,0 +1,27 @@
+<script>
+  const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if ('IntersectionObserver' in window) {
+    const candidates = [...document.querySelectorAll<HTMLElement>(
+      'main > section:not(.home-hero), main > .container > section, .page-intro, .gallery-group, [data-reveal]',
+    )];
+    // Observe section-sized groups once; enhancement never hides the content.
+    const targets = candidates.filter(element =>
+      !candidates.some(parent => parent !== element && parent.contains(element)),
+    );
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const element = entry.target as HTMLElement;
+        if (!preference.matches) {
+          element.classList.add('is-revealing');
+          element.addEventListener('animationend', () => element.classList.remove('is-revealing'), { once: true });
+        }
+        observer.unobserve(element);
+      });
+    }, { threshold: 0.05 });
+    targets.filter(element => element.getBoundingClientRect().top >= window.innerHeight).forEach(element => observer.observe(element));
+    preference.addEventListener('change', () => {
+      if (preference.matches) document.querySelectorAll('.is-revealing').forEach(element => element.classList.remove('is-revealing'));
+    });
+  }
+</script>

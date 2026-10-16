@@ -5,6 +5,8 @@ import process from 'node:process';
 
 const windows = process.platform === 'win32';
 const serverPrebundles = [
+  // Sharp's ESM entry imports CommonJS helpers that need the same Windows prebundling.
+  'sharp',
   'react',
   'react-dom/server',
   'astro/content/runtime',

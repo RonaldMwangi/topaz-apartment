@@ -27,11 +27,13 @@ const { limit = faqs.length } = Astro.props;
     border-top: 1px solid var(--color-border);
   }
   summary {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1.75rem minmax(0, 1fr) 1.5rem;
     align-items: center;
-    gap: var(--space-5);
+    gap: var(--space-4);
     list-style: none;
-    padding-block: var(--space-6);
+    padding-block: var(--space-5);
+    min-block-size: var(--touch-target);
     cursor: pointer;
     font-size: var(--text-base);
     font-weight: var(--weight-medium);
@@ -45,7 +47,7 @@ const { limit = faqs.length } = Astro.props;
     color: var(--color-muted);
   }
   .toggle {
-    margin-left: auto;
+    justify-self: center;
     font-size: 1.5rem;
     font-weight: 300;
   }
@@ -54,7 +56,17 @@ const { limit = faqs.length } = Astro.props;
   }
   p {
     color: var(--color-muted);
-    padding: 0 2.5rem var(--space-5);
+    margin: 0;
+    padding: 0 2.5rem var(--space-5) 2.75rem;
     max-width: 48rem;
+  }
+  @media (max-width: 40rem) {
+    summary {
+      grid-template-columns: 1.5rem minmax(0, 1fr) 1.25rem;
+      gap: var(--space-3);
+    }
+    p {
+      padding-inline: 2.25rem 0;
+    }
   }
 </style>

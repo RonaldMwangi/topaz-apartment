@@ -8,10 +8,10 @@ import { galleryCategories } from '../config/media';
 
 <BaseLayout>
   <div class="container">
-    <PageIntro
-      title="A closer look at Topaz."
+    <PageIntro editorial
+      title="A closer look at Topaz"
       eyebrow="The gallery / Spaces & details"
-      description="Our spaces, through the lens. While authentic photographs are being prepared, these abstract coastal studies set the mood. They are artwork, not images of the property."
+      description="Explore the apartments, interior details and coastal inspiration for your stay at Topaz. Illustrative photographs are labelled throughout."
     />
     <nav class="gallery-navigation" aria-label="Gallery categories">
       <ul>
@@ -31,13 +31,13 @@ import { galleryCategories } from '../config/media';
 </BaseLayout>
 <style>
   .gallery-navigation {
-    margin-bottom: 3rem;
+    margin-bottom: var(--space-6);
   }
   ul {
     list-style: none;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem 1.5rem;
+    gap: var(--space-2) var(--space-5);
     padding: 0;
     margin: 0;
   }

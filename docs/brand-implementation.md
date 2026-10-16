@@ -143,3 +143,15 @@ website imagery. After changes, run `npm run check`, `npm test` and
 
 Astro references: [Fonts API](https://docs.astro.build/en/guides/fonts/) and
 [local provider](https://docs.astro.build/en/reference/font-provider-reference/#local).
+
+## Header and footer refinement — 16 October 2026
+
+The approved brand guide also contains a horizontal logo variation. Header and footer now use public/brand/topaz-logo-horizontal.png, an exact RGB crop of brand-reference/topaz-brand-guidelines.jpeg at x164, y402, width136, height52. No pixels were recoloured, redrawn, sharpened or made transparent. Both earlier logo assets and the original brand guide remain unchanged.
+
+This crop is displayed below its native dimensions: approximately 126×48px on desktop and 105×40px in mobile navigation. Navigation clear space is 16px; the visible mark stays above the guide's 100px minimum digital width. Header height is now 88px on desktop and 80px at 768px and below, with matching shared anchor/hero spacing tokens. The footer uses the same horizontal mark at 126×48px.
+
+The source is still a small flattened JPEG variation. A high-resolution transparent PNG/SVG master remains preferable for sharper high-density rendering and removing the opaque canvas. Do not use a white-removal threshold, CSS blend/filter or synthetic redraw to approximate the fine gemstone and tagline edges.
+
+Scrolled/internal headers use 96% white with 12px backdrop blur when supported, with an opaque white fallback. The homepage top remains transparent with blur disabled. Keep the prefixed backdrop declaration before the standard declaration: the production CSS optimiser otherwise retained only the prefix in this environment, which Chrome did not apply. The final compiled standard declaration and actual browser blur were verified.
+
+Footer hierarchy now uses the official Montserrat medium tagline, a 14px Poppins description at 1.6 line-height, subordinate location context and the existing navigation/contact groups. The latest evidence and scope are documented in brand-audit-review.md.

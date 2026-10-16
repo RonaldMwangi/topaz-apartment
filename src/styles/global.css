@@ -72,6 +72,7 @@
   --breakpoint-navigation: 80rem;
   --control-height: 3.25rem;
   --touch-target: 2.75rem;
+  --site-header-height: 5.5rem;
   --motion-duration: 200ms;
   --motion-easing: ease-out;
   --radius: 0.25rem;
@@ -82,8 +83,10 @@
   box-sizing: border-box;
 }
 html {
-  scroll-padding-top: var(--space-6);
+  scroll-padding-top: calc(var(--site-header-height) + var(--space-5));
+  scrollbar-gutter: stable;
 }
+html.has-lightbox { overflow: hidden; }
 body {
   margin: 0;
   min-block-size: 100svh;
@@ -203,6 +206,9 @@ legend {
   grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: var(--grid-gap);
 }
+.grid-12 > * {
+  min-inline-size: 0;
+}
 .eyebrow {
   display: block;
   font-family: var(--font-body);
@@ -240,6 +246,9 @@ legend {
 }
 .section-heading p {
   max-inline-size: 27rem;
+}
+.section-aside p {
+  margin-block-end: var(--space-4);
 }
 .section-aside {
   max-inline-size: 27rem;
@@ -371,11 +380,43 @@ legend {
   display: none !important;
 }
 @media (max-width: 48rem) {
+  :root { --site-header-height: 5rem; }
   .section-heading {
     display: block;
   }
   .section-heading > * + * {
     margin-block-start: var(--space-5);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .is-revealing { animation: section-reveal 550ms ease-out both; }
+  @keyframes section-reveal {
+    from { opacity: 0.8; transform: translateY(10px); }
+    to { opacity: 1; transform: none; }
+  }
+  @media (hover: hover) {
+    .media-link img, .gallery-item img { transition: transform 500ms ease-out; }
+    .media-link:hover img, .gallery-item:hover img { transform: scale(1.025); }
+    .feature-card, .apartment-card { transition: transform 250ms ease-out; }
+    .feature-card:hover, .apartment-card:hover { transform: translateY(-3px); }
+    .button:active { transform: translateY(1px); }
+  }
+}
+@media (max-width: 40rem) {
+  :root {
+    --space-section: 3.25rem;
+    --space-8: 2rem;
+    --component-padding: 1.25rem;
+  }
+  .actions {
+    align-items: stretch;
+  }
+  .actions > :is(a, button) {
+    inline-size: 100%;
+  }
+  .actions > .enquiry-action,
+  .actions > .enquiry-action .button {
+    inline-size: 100%;
   }
 }
 @media (prefers-reduced-motion: reduce) {

@@ -10,13 +10,11 @@ const { detailed = false } = Astro.props;
 <div class:list={['facilities-grid', { detailed }]}>{facilities.map((facility) => (
   <article class="facility" id={detailed ? facility.id : undefined}>
     <div class="facility-top">
-      <span class="eyebrow">{facility.number} / {facility.id === 'pool' || facility.id === 'parking' ? 'Property facility' : 'By advance arrangement'}</span>
+      <span class="eyebrow">{facility.number} / {facility.id === 'pool' ? 'Property facility' : 'By advance arrangement'}</span>
       <span class="facility-mark" aria-hidden="true">
         {facility.id === 'pool'
           ? '≈'
-          : facility.id === 'parking'
-            ? 'P'
-            : facility.id === 'meals'
+          : facility.id === 'meals'
               ? '◌'
               : '↗'}
       </span>
@@ -24,8 +22,8 @@ const { detailed = false } = Astro.props;
     <h3>{facility.title}</h3>
     <p>{facility.description}</p>
     {detailed && <p class="facility-note">{facility.note}</p>}
-    {detailed && (facility.enquiryKind === 'meals' || facility.enquiryKind === 'transfer') ? (
-      <WhatsAppEnquiry kind={facility.enquiryKind} label={facility.enquiryKind === 'meals' ? 'Enquire About Meals' : 'Enquire About Transfers'} variant="text" ctaLocation="facility_details" />
+    {detailed && facility.enquiryKind !== 'general' ? (
+      <WhatsAppEnquiry kind={facility.enquiryKind} label={facility.enquiryKind === 'meals' ? 'Plan Your Meals' : facility.enquiryKind === 'yacht' ? 'Arrange Your Yacht Experience' : 'Plan Your Transfer'} variant="text" ctaLocation="facility_details" />
     ) : <a
       class="text-link"
       href={
@@ -33,7 +31,7 @@ const { detailed = false } = Astro.props;
           ? '#transfer-enquiry'
           : facility.id === 'meals' && detailed
             ? '/contact/?interest=meals#enquiry'
-            : `/facilities/#${facility.id}`
+            : `/facilities/#${facility.id === 'yacht' ? 'coastal-experiences' : facility.id}`
       }
     >
       {facility.id === 'meals' && detailed

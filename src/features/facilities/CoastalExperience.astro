@@ -1,25 +1,26 @@
 ---
 import WhatsAppEnquiry from '../enquiries/WhatsAppEnquiry.astro';
 import Media from '../../components/Media.astro';
-import { experiencePhotos } from '../../config/media';
+import { photoForPlacement } from '../../config/media';
+const photo = photoForPlacement(Astro.url.pathname === '/' ? 'home-experience' : 'facilities-experience');
 ---
 <section class="experience section" id="coastal-experiences" aria-labelledby="experience-heading">
   <div class="container grid-12">
     <div class="experience-copy">
-      <span class="eyebrow">Beyond the apartment / Separate arrangements</span>
-      <h2 id="experience-heading">Explore the coast beyond your stay.</h2>
-      <p class="lead">A different perspective on Mtwapa Creek.</p>
-      <p>Interested in a yacht experience along Mtwapa Creek? Ask our team about possible arrangements, schedules and pricing.</p>
-      <p class="small muted">Experiences are arranged separately and are not included in accommodation rates. Provider availability, arrangements and charges must be confirmed.</p>
-      <WhatsAppEnquiry kind="yacht" label="Enquire About Yacht Experiences" ctaLocation="coastal_experience" />
+      <span class="eyebrow">Beyond the apartment</span>
+      <h2 id="experience-heading">Discover the Coast from a Different Perspective</h2>
+      <p class="lead">Add something memorable to your coastal stay.</p>
+      <p>Let Topaz Apartments arrange a yacht experience along Mtwapa Creek, with the details tailored to your plans.</p>
+      <p class="small muted">Our team confirms availability, applicable charges and booking terms when planning your experience.</p>
+      <WhatsAppEnquiry kind="yacht" label="Arrange Your Yacht Experience" ctaLocation="coastal_experience" />
     </div>
-    <div class="experience-media"><Media label="Mtwapa Creek experience photography" photo={[...experiencePhotos].sort((a,b)=>(a.order ?? 0)-(b.order ?? 0))[0]} aspect="landscape" variant="outline" /></div>
+    <div class="experience-media"><Media label="Yacht experience" photo={photo} aspect="landscape" variant="outline" /></div>
   </div>
 </section>
 <style>
   .experience { background: var(--color-surface-alt); }
   .experience-copy { grid-column: span 6; max-width: var(--container-reading); }
-  .experience-media { grid-column: 8 / -1; align-self: center; }
+  .experience-media { grid-column: 7 / -1; align-self: center; }
   h2 { margin-bottom: var(--space-5); }
   .experience-copy > p { margin-bottom: var(--space-5); }
   @media (max-width: 64rem) { .experience-media { grid-column: 7 / -1; } }

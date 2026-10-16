@@ -12,9 +12,9 @@ export const pageSeo: Record<string, { title: string; description: string }> = {
     description: `Explore one-bedroom apartments at ${one} and two-bedroom apartments at ${two} per night in Shanzu, Mombasa. Ask about dates and terms on WhatsApp.`,
   },
   '/facilities/': {
-    title: 'Pool, Parking & Guest Services | Topaz Apartments',
+    title: 'Pool & Guest Experiences | Topaz Apartments',
     description:
-      'Discover the pool and ample parking at Topaz Apartments, Shanzu. Enquire about advance meals, transfers and separate Mtwapa Creek yacht arrangements.',
+      'Discover the swimming pool and guest experiences at Topaz Apartments, Shanzu. Plan advance meals, transfers and Mtwapa Creek yacht arrangements with our team.',
   },
   '/gallery/': {
     title: 'Apartment & Property Gallery | Topaz Apartments Shanzu',

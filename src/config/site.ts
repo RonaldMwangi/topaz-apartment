@@ -12,6 +12,8 @@ interface SiteConfig {
     mapsUrl: string;
     coordinates: { latitude: number; longitude: number };
     beachWalk: string;
+    summary: string;
+    landmarks: string;
   };
   /** Verified production origin including https://; null until confirmed. */
   publicOrigin: string | null;
@@ -29,7 +31,9 @@ export const site: SiteConfig = {
     locality: 'Shanzu',
     city: 'Mombasa',
     country: 'Kenya',
-    nearby: ['PrideInn in Shanzu', 'the Serena Beach area'],
+    nearby: ['PrideInn in the Shanzu area', 'Sunset Paradise (next door)', 'the Serena Beach area'],
+    summary: "Located in Shanzu, Mombasa, next to Sunset Paradise and near PrideInn, in the Serena Beach area — approximately 15 minutes’ walk from the beach.",
+    landmarks: 'Next to Sunset Paradise, near PrideInn, in the Serena Beach area.',
     exactAddress: null,
     mapsUrl: 'https://maps.app.goo.gl/PRfUywz8UmemTPmL6',
     coordinates: { latitude: -3.9649818, longitude: 39.748275 },

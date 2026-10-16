@@ -68,5 +68,8 @@ test('official reservation number, apartment rate and yacht context survive enco
   const message = buildEnquiryMessage('Topaz Apartments', { kind: 'yacht' });
   assert.match(message, /Mtwapa Creek/);
   assert.match(message, /separate arrangement/);
+  assert.match(message, /Topaz Apartments to arrange a yacht experience/);
+  assert.match(message, /availability, applicable charges and booking terms/);
+  assert.doesNotMatch(message, /provider|tax/i);
   assert.doesNotMatch(message, /free|complimentary|three.night|September/i);
 });

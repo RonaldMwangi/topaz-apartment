@@ -23,7 +23,7 @@ export const enquiryMessages: Record<EnquiryKind, string> = {
   meals: 'I would like to enquire about meal and kitchen arrangements in advance.',
   transfer: 'I would like to enquire about transport or transfer arrangements.',
   yacht:
-    'I would like details about possible yacht-cruise arrangements along Mtwapa Creek. Please confirm provider availability, schedules and pricing; this is a separate arrangement.',
+    'I would like Topaz Apartments to arrange a yacht experience along Mtwapa Creek during my stay. Kindly confirm availability, applicable charges and booking terms. This is a separate arrangement.',
 };
 
 /** Accept international formatting without guessing a country or local prefix. */
@@ -51,7 +51,7 @@ export function buildEnquiryMessage(propertyName: string, details: EnquiryDetail
     field('Preferred transfer date', details.transferDate),
     field('Preferred transfer time (Kenya time, UTC+3)', details.transferTime),
     field('Passengers', details.passengers),
-    'Please confirm availability, applicable rates, charges and arrangements. This is an enquiry, not a confirmed reservation.',
+    'Please confirm availability, applicable charges and booking terms. This is an enquiry, not a confirmed reservation.',
   ]
     .filter(Boolean)
     .join('\n');

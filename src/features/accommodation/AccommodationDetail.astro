@@ -1,7 +1,7 @@
 ---
 import { getCollection, type CollectionEntry } from 'astro:content';
 import Media from '../../components/Media.astro';
-import { photosForCategory, propertyPhotos } from '../../config/media';
+import { photoForPlacement } from '../../config/media';
 import Rate from './Rate.astro';
 import WhatsAppEnquiry from '../enquiries/WhatsAppEnquiry.astro';
 import EnquirySection from '../enquiries/EnquirySection.astro';
@@ -15,9 +15,7 @@ const {
 const alternative = (
   await getCollection('accommodation', ({ data: other }) => !other.draft && other.id !== data.id)
 )[0];
-const photo = data.photoIds.length
-  ? propertyPhotos.find((item) => item.id === data.photoIds[0])
-  : photosForCategory(data.id)[0];
+const photo = photoForPlacement(`detail-featured:${data.id}`);
 ---
 
 <div class="container">
@@ -50,7 +48,8 @@ const photo = data.photoIds.length
         photo={photo}
         label={data.title}
         variant={data.id === 'one-bedroom' ? 'light' : 'soft'}
-        aspect="wide"
+        aspect="landscape"
+        sizes="(max-width: 1422px) 90vw, 1280px"
         priority
       />
     </div>
@@ -61,7 +60,7 @@ const photo = data.photoIds.length
       <h2>
         Your time in Shanzu,
         <br />
-        your way.
+        your way
       </h2>
       {data.detailedDescription && <p class="lead">{data.detailedDescription}</p>}
       <p>
@@ -106,7 +105,7 @@ const photo = data.photoIds.length
       )}
       <div class="arrangements-note">
         <span class="eyebrow">A little forward planning</span>
-        <h3>More than the apartment.</h3>
+        <h3>More than the apartment</h3>
         <p>
           Explore the property’s facilities and enquire about advance meal arrangements or transport
           for your stay.
@@ -192,6 +191,9 @@ const photo = data.photoIds.length
   .detail-media {
     grid-column: 1 / -1;
   }
+  .detail-media :global(.media-visual) {
+    aspect-ratio: 16 / 9;
+  }
   .detail-copy {
     grid-column: span 7;
   }
@@ -266,6 +268,9 @@ const photo = data.photoIds.length
     }
   }
   @media (max-width: 48rem) {
+    .detail-media :global(.media-visual) {
+      aspect-ratio: 4 / 5;
+    }
     .detail-heading,
     .hero-aside,
     .detail-copy,

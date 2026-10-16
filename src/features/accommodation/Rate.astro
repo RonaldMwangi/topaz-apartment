@@ -26,7 +26,7 @@ const formatted = formatNightlyRate(rate);
   {!formatted && <span class="rate-basis">Nightly rate · KES · to be confirmed</span>}
   {rate.specialRateNote && <p class="rate-note">{rate.specialRateNote}</p>}
   {rate.feeAndTaxNote && <p class="rate-note">{rate.feeAndTaxNote}</p>}
-  {formatted && !rate.feeAndTaxNote && <p class="rate-note">Confirm taxes, mandatory charges and applicable terms with the reservations team.</p>}
+  {formatted && !rate.feeAndTaxNote && !compact && <p class="rate-note">Contact our team to confirm availability, applicable charges and booking terms.</p>}
   {rate.validityNote && <p class="rate-note">{rate.validityNote}</p>}
   {rate.terms && rate.terms.length > 0 && (
     <ul class="rate-terms">
@@ -34,12 +34,6 @@ const formatted = formatNightlyRate(rate);
         <li>{term}</li>
       ))}
     </ul>
-  )}
-  {!compact && (
-    <p class="rate-note">
-      Ask the property to confirm the applicable rate, any taxes or mandatory fees, and the terms for
-      your dates.
-    </p>
   )}
 </div>
 <style>

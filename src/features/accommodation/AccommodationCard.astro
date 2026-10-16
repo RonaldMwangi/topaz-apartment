@@ -1,7 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import Media from '../../components/Media.astro';
-import { photosForCategory, propertyPhotos } from '../../config/media';
+import { photoForPlacement } from '../../config/media';
 import Rate from './Rate.astro';
 import WhatsAppEnquiry from '../enquiries/WhatsAppEnquiry.astro';
 interface Props {
@@ -10,14 +10,12 @@ interface Props {
 const {
   apartment: { data },
 } = Astro.props;
-const photo = data.photoIds.length
-  ? propertyPhotos.find((item) => item.id === data.photoIds[0])
-  : photosForCategory(data.id)[0];
+const photo = photoForPlacement(`${Astro.url.pathname === '/' ? 'home-card' : 'collection-card'}:${data.id}`);
 ---
 
 <article class="apartment-card">
   <a class="media-link" href={`/accommodation/${data.id}/`} aria-label={`Explore the ${data.title}`}>
-    <Media photo={photo} label={data.title} variant={data.id === 'one-bedroom' ? 'light' : 'soft'} />
+    <Media photo={photo} label={data.title} aspect="landscape" variant={data.id === 'one-bedroom' ? 'light' : 'soft'} />
   </a>
   <div class="card-heading">
     <span class="apartment-number" aria-hidden="true">{data.number}</span>
@@ -48,6 +46,8 @@ const photo = data.photoIds.length
 <style>
   .apartment-card {
     min-width: 0;
+    display: flex;
+    flex-direction: column;
   }
   .media-link {
     display: block;
@@ -75,6 +75,7 @@ const photo = data.photoIds.length
     max-width: 33rem;
   }
   .card-bottom {
+    margin-top: auto;
     flex-wrap: wrap;
     display: flex;
     justify-content: space-between;
@@ -96,6 +97,9 @@ const photo = data.photoIds.length
   }
   .card-enquiry {
     margin-top: 1rem;
+  }
+  .card-enquiry :global(.button) {
+    width: 100%;
   }
   @media (max-width: 40rem) {
     .card-bottom {

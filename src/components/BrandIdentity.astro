@@ -2,11 +2,11 @@
 import { site } from '../config/site';
 
 interface Props {
-  presentation?: 'navigation' | 'full';
+  presentation?: 'navigation' | 'footer' | 'full';
 }
 const { presentation = 'navigation' } = Astro.props;
-// Replace only after receiving an approved horizontal/vector/transparent asset.
-// The supplied JPEG is opaque and must be displayed in full, including its margins.
+// The horizontal variation is a pixel-preserving crop of the approved brand
+// guide. Full presentation retains the supplied original artwork.
 const logo = { src: '/brand/topaz-logo-original.jpeg', width: 568, height: 568 };
 ---
 
@@ -15,9 +15,9 @@ const logo = { src: '/brand/topaz-logo-original.jpeg', width: 568, height: 568 }
     <img src={logo.src} width={logo.width} height={logo.height} alt={`${site.name} — ${site.tagline}`} loading="lazy" decoding="async" />
   </a>
 ) : (
-  <a class="brand-navigation" href="/" aria-label={`${site.name} home`}>
-    <span class="brand-title">Topaz</span>
-    <span class="brand-descriptor">Apartments</span>
+  <a class:list={['brand-navigation', { 'brand-footer': presentation === 'footer' }]} href="/" aria-label={`${site.name} home`}>
+    <img src="/brand/topaz-logo-horizontal.png" width="136" height="52"
+      alt={`${site.name} — ${site.tagline}`} loading={presentation === 'footer' ? 'lazy' : 'eager'} decoding="async" />
   </a>
 )}
 
@@ -27,26 +27,23 @@ const logo = { src: '/brand/topaz-logo-original.jpeg', width: 568, height: 568 }
     flex-direction: column;
     align-items: start;
     flex-shrink: 0;
-    font-family: var(--font-heading);
-    text-transform: uppercase;
     text-decoration: none;
     color: var(--color-brand-navy);
-    min-inline-size: 10rem;
-    padding-block: var(--space-2);
+    padding: var(--space-4);
   }
-  .brand-title {
-    font-size: 1.75rem;
-    line-height: 1.1;
-    font-weight: var(--weight-bold);
-    letter-spacing: var(--tracking-label);
+  .brand-navigation img {
+    inline-size: auto;
+    block-size: 3rem;
+    max-inline-size: 100%;
+    object-fit: contain;
   }
-  .brand-descriptor {
-    margin-top: var(--space-1);
-    font-size: var(--text-xs);
-    line-height: 1.3;
-    font-weight: var(--weight-medium);
-    letter-spacing: var(--tracking-label);
+  @media (max-width: 48rem) {
+    .brand-navigation img {
+      block-size: 2.5rem;
+    }
   }
+  .brand-footer { padding: var(--space-1); }
+  .brand-footer img { block-size: 3rem; }
   .brand-asset {
     /* At a 240px image width the logo's T is approximately 24px tall.
          This 32px envelope exceeds that reference, in addition to original margins. */
